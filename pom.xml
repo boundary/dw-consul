@@ -54,8 +54,12 @@
                         <artifactId>jackson-jaxrs-json-provider</artifactId>
                     </exclusion>
                     <exclusion>
-                        <groupId>com.google.guava</groupId>
-                        <artifactId>guava</artifactId>
+                        <groupId>org.apache.cxf</groupId>
+                        <artifactId>cxf-rt-rs-client</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.cxf</groupId>
+                        <artifactId>cxf-rt-transports-http-hc</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
