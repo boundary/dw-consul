@@ -1,102 +1,62 @@
 package com.boundary.dropwizard.consul.registration;
 
+import com.google.common.collect.ImmutableMap;
 import com.orbitz.consul.AgentClient;
 import com.orbitz.consul.model.agent.Registration;
 import io.dropwizard.lifecycle.Managed;
-import io.dropwizard.lifecycle.ServerLifecycleListener;
 import io.dropwizard.util.Duration;
-import jersey.repackaged.com.google.common.collect.Maps;
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Server;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.net.InetSocketAddress;
-import java.nio.channels.ServerSocketChannel;
 import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
-public class ConsulServiceRegistration implements ServerLifecycleListener, Managed {
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.requireNonNull;
 
+public class ConsulServiceRegistration implements Managed {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConsulServiceRegistration.class);
-    private final AgentClient agentClient;
-    private final String serviceName;
-    private final String healthConnector;
-    private final String healthConnectorUrl;
-    private final Duration checkInterval;
-    private final Map<String, Integer> additionalServices;
-    private CopyOnWriteArrayList<String> serviceIds = new CopyOnWriteArrayList<>();
+    private final BiConsumer<String, Integer> register;
+    private final Consumer<String> deregister;
+    private final ImmutableMap<String, Integer> services;
 
-    public ConsulServiceRegistration(AgentClient agentClient, String serviceName, String healthConnector, String healthConnectorUrl, Duration checkInterval, Map<String, Integer> additionalServices) {
-        this.agentClient = agentClient;
-        this.serviceName = serviceName;
-        this.healthConnector = healthConnector;
-        this.healthConnectorUrl = healthConnectorUrl;
-        this.checkInterval = checkInterval;
-        this.additionalServices = additionalServices;
-    }
-    @Override
-    public void serverStarted(Server server) {
+    public ConsulServiceRegistration(AgentClient agentClient,
+                                     String serviceName,
+                                     String healthConnector,
+                                     String healthConnectorUrl,
+                                     Duration checkInterval,
+                                     String tagSeparator,
+                                     Map<String, Integer> services) {
 
-        Map<String, Integer> connectorPortMap = Maps.newHashMap();
+        this.services = ImmutableMap.copyOf(services);
 
+        requireNonNull(serviceName);
+        requireNonNull(healthConnector);
+        requireNonNull(healthConnectorUrl);
+        requireNonNull(checkInterval);
+        requireNonNull(tagSeparator);
 
-        for (final Connector connector : server.getConnectors()) {
+        final Integer healthPort = services.get(healthConnector);
+        checkArgument(healthPort != null, "Health check key [%s] must match a configured service", healthConnector);
 
-            String name = connector.getName();
-            final ServerSocketChannel channel = (ServerSocketChannel) connector
-                        .getTransport();
-
-                try {
-                    final InetSocketAddress socket = (InetSocketAddress) channel
-                            .getLocalAddress();
-
-                    connectorPortMap.put(name, socket.getPort());
-                } catch (final Exception e) {
-                    LOGGER.error("Unable to register services in consul", e);
-                    return;
-                }
-        }
-
-        register(connectorPortMap);
-    }
-
-    private void register(Map<String, Integer> connectorPortMap) {
-
-        Integer healthPort = connectorPortMap.get(healthConnector);
-        if (healthPort == null) {
-            LOGGER.error("Unable to get health connector info. No registration entries will be made");
-            return;
-        }
-
-
-        Registration.Check check = new Registration.Check();
+        final Registration.Check check = new Registration.Check();
         check.setHttp(String.format(healthConnectorUrl, healthPort));
         check.setInterval(checkInterval.toSeconds() + "s");
 
-        BiConsumer<String, Integer> reg = (id, port) -> register(check, id, port);
+        final Function<String, String> serviceId = (tag) -> serviceName + tagSeparator + tag;
+        this.register = (tag, port) ->
+                agentClient.register(port, check, serviceName, serviceId.apply(tag), tag);
+        this.deregister = (tag) -> agentClient.deregister(serviceId.apply(tag));
 
-        connectorPortMap.forEach(reg);
-        additionalServices.forEach(reg);
-
-    }
-
-    private void register(Registration.Check check, String tag, Integer port) {
-        String serviceId = serviceName + "-" + tag;
-        serviceIds.add(serviceId);
-        agentClient.register(port, check, serviceName, serviceId, tag);
     }
 
     @Override
     public void start() throws Exception {
-        // do nothing..
+        services.forEach(this.register);
     }
 
     @Override
     public void stop() throws Exception {
-        serviceIds.forEach(agentClient::deregister);
+        services.keySet().forEach(this.deregister);
     }
 }

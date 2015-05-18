@@ -16,7 +16,7 @@
     <properties>
         <guava.version>18.0</guava.version>
         <dropwizard.version>0.8.1</dropwizard.version>
-        <orbitz.consul.version>0.8.4</orbitz.consul.version>
+        <orbitz.consul.version>0.9</orbitz.consul.version>
     </properties>
 
     <dependencyManagement>
@@ -79,6 +79,20 @@
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.4</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
