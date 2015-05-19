@@ -132,7 +132,7 @@
     </distributionManagement>
 
     <scm>
-        <connection>scm:git:ssh://git@vcs.boundary.us-west-2/services/einstein.git</connection>
+        <connection>scm:git:ssh://git@vcs.boundary.us-west-2/services/dw-consul.git</connection>
         <tag>HEAD</tag>
     </scm>
 
