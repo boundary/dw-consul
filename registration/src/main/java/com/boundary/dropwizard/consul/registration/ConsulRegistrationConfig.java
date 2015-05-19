@@ -1,6 +1,8 @@
 package com.boundary.dropwizard.consul.registration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.primitives.Ints;
 import com.orbitz.consul.AgentClient;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.util.Duration;
@@ -27,6 +29,9 @@ public class ConsulRegistrationConfig {
     @JsonProperty
     private String healthUrl = "http://localhost:%d/healthcheck";
 
+    @JsonProperty
+    private boolean registerJmx = true;
+
     @MinDuration(value = 1, unit = TimeUnit.SECONDS)
     @NotNull
     @JsonProperty
@@ -50,10 +55,24 @@ public class ConsulRegistrationConfig {
                 healthUrl,
                 checkInterval,
                 tagSeparator,
-                services);
+                getServices()
+                );
 
         environment.lifecycle().manage(csr);
 
     }
 
+    private Map<String, Integer> getServices() {
+
+        if (registerJmx && services.get("jmx") == null) {
+            Optional<Integer> jmxport = Optional.ofNullable(System.getProperty("com.sun.management.jmxremote.port")).map(Ints::tryParse);
+            if (jmxport.isPresent()) {
+                return ImmutableMap.<String, Integer>builder()
+                        .putAll(services)
+                        .put("jmx", jmxport.get())
+                        .build();
+            }
+        }
+        return services;
+    }
 }
