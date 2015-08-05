@@ -69,7 +69,9 @@ registration:
 ## all config options
 
 ```yml
-consul: localhost:8500
+consul:
+  agent: localhost:8500
+
 registration:
   healthConnectorName: admin
   serviceName: serviceName
@@ -127,5 +129,4 @@ Here's an example of you you might get under the suggested config, registering a
 ]
 ```
 
-You can query these healthy nodes based on tags as `curl localhost:8500/v1/health/service/sasquatch?tag=jmx`. See the [consul api docs](http://www.consul.io/docs/agent/http.html) for more info.
-
+You can query these healthy nodes based on tags as `curl 127.0.0.1:8500/v1/health/service/sasquatch?tag=jmx`. See the [consul api docs](http://www.consul.io/docs/agent/http.html) for more info.
