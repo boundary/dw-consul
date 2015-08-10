@@ -2,8 +2,8 @@
 
 Tools for integrating consul with dropwizard apps
 
-Current implementation allows quick configuration and setup of a [Consul client](https://github.com/OrbitzWorldwide/consul-client), and registration of multiple
-service endpoints.
+Current implementation allows quick configuration and setup of a managed [Consul client](https://github.com/OrbitzWorldwide/consul-client), 
+and registration of multiple service endpoints hooked into the dropwizard app life cycle.
 
 ## usage
 
@@ -15,7 +15,7 @@ service endpoints.
         <dependency>
             <groupId>com.boundary.dropwizard.consul</groupId>
             <artifactId>registration</artifactId>
-            <version>0.2</version>
+            <version>0.3</version>
         </dependency>
 ```
 
@@ -49,7 +49,10 @@ In your application class:
 
 ```java
 
+        // get a consul-client object. see https://github.com/OrbitzWorldwide/consul-client for more info
         Consul consul = configuration.getConsul().build(environment);
+
+        // register your configured application services in consul
         configuration.getRegistration().register(environment, consul.agentClient());
 
 ```
