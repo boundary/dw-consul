@@ -14,7 +14,7 @@
     <properties>
         <guava.version>18.0</guava.version>
         <dropwizard.version>0.8.1</dropwizard.version>
-        <orbitz.consul.version>0.9.3</orbitz.consul.version>
+        <orbitz.consul.version>0.9.8</orbitz.consul.version>
     </properties>
 
     <dependencyManagement>
@@ -62,6 +62,19 @@
                 </exclusions>
             </dependency>
 
+            <!-- test deps -->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.12</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>1.10.19</version>
+                <scope>test</scope>
+            </dependency>
 
         </dependencies>
 

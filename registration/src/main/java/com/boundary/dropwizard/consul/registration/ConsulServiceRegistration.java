@@ -39,9 +39,7 @@ public class ConsulServiceRegistration implements Managed {
         final Integer healthPort = services.get(healthConnector);
         checkArgument(healthPort != null, "Health check key [%s] must match a configured service", healthConnector);
 
-        final Registration.Check check = new Registration.Check();
-        check.setHttp(String.format(healthConnectorUrl, healthPort));
-        check.setInterval(checkInterval.toSeconds() + "s");
+        final Registration.RegCheck check = Registration.RegCheck.http(String.format(healthConnectorUrl, healthPort), checkInterval.toSeconds());
 
         final Function<String, String> serviceId = (tag) -> serviceName + tagSeparator + tag;
         this.register = (tag, port) ->

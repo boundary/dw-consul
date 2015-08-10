@@ -50,11 +50,11 @@ public class ConsulRegistrationConfig {
 
         ConsulServiceRegistration csr = new ConsulServiceRegistration(
                 client,
-                serviceName.orElse(environment.getName()),
-                healthConnectorName,
-                healthUrl,
-                checkInterval,
-                tagSeparator,
+                getServiceName().orElse(environment.getName()),
+                getHealthConnectorName(),
+                getHealthUrl(),
+                getCheckInterval(),
+                getTagSeparator(),
                 getServices()
                 );
 
@@ -62,9 +62,9 @@ public class ConsulRegistrationConfig {
 
     }
 
-    private Map<String, Integer> getServices() {
+    public Map<String, Integer> getServices() {
 
-        if (registerJmx && services.get("jmx") == null) {
+        if (isRegisterJmx() && services.get("jmx") == null) {
             Optional<Integer> jmxport = Optional.ofNullable(System.getProperty("com.sun.management.jmxremote.port")).map(Ints::tryParse);
             if (jmxport.isPresent()) {
                 return ImmutableMap.<String, Integer>builder()
@@ -75,4 +75,37 @@ public class ConsulRegistrationConfig {
         }
         return services;
     }
+
+    public void setRegisterJmx(boolean registerJmx) {
+        this.registerJmx = registerJmx;
+    }
+
+    public void setServices(Map<String, Integer> services) {
+        this.services = services;
+    }
+
+    public String getTagSeparator() {
+        return tagSeparator;
+    }
+
+    public Duration getCheckInterval() {
+        return checkInterval;
+    }
+
+    public boolean isRegisterJmx() {
+        return registerJmx;
+    }
+
+    public String getHealthUrl() {
+        return healthUrl;
+    }
+
+    public Optional<String> getServiceName() {
+        return serviceName;
+    }
+
+    public String getHealthConnectorName() {
+        return healthConnectorName;
+    }
+
 }
