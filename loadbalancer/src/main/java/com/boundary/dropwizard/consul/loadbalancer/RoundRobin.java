@@ -26,7 +26,7 @@ public class RoundRobin<CLIENT> implements ConsulCache.Listener<ServiceHealth>, 
 
     private final static Logger LOGGER = LoggerFactory.getLogger(RoundRobin.class);
 
-    private final Function<String, CLIENT> clientFactory;
+    private final Function<ServiceHealth, CLIENT> clientFactory;
     private final ConcurrentMap<String, CLIENT> clientCache = Maps.newConcurrentMap();
     private Iterator<CLIENT> clientIterator = Collections.emptyIterator();
 
@@ -37,7 +37,7 @@ public class RoundRobin<CLIENT> implements ConsulCache.Listener<ServiceHealth>, 
      * @param clientFactory function to create CLIENT instances
      */
     public RoundRobin(ServiceHealthCache healthCache,
-                      Function<String, CLIENT> clientFactory) {
+                      Function<ServiceHealth, CLIENT> clientFactory) {
         this.clientFactory = clientFactory;
         healthCache.addListener(this);
     }
@@ -59,7 +59,7 @@ public class RoundRobin<CLIENT> implements ConsulCache.Listener<ServiceHealth>, 
     private CLIENT createAndStore(Tuple2<String, ServiceHealth> entry) {
         return clientCache.computeIfAbsent(entry.v1(), k -> {
             try {
-                return clientFactory.apply(entry.v1());
+                return clientFactory.apply(entry.v2());
             } catch (Exception e) {
                 LOGGER.error("Error creating a client", e);
                 return null;

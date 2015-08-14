@@ -29,9 +29,9 @@ public class RoundRobinTest {
 
 
     private static class FakeClient {
-        private final String hap;
-        private FakeClient(String hap) {
-            this.hap = hap;
+        private final ServiceHealth serviceHealth;
+        private FakeClient(ServiceHealth serviceHealth) {
+            this.serviceHealth = serviceHealth;
         }
     }
     @Test
