@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.boundary.dropwizard.consul</groupId>
@@ -9,6 +10,7 @@
     <modules>
         <module>client</module>
         <module>registration</module>
+        <module>loadbalancer</module>
     </modules>
 
     <properties>
@@ -24,6 +26,62 @@
                 <groupId>io.dropwizard</groupId>
                 <artifactId>dropwizard-core</artifactId>
                 <version>${dropwizard.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>io.dropwizard</groupId>
+                        <artifactId>dropwizard-configuration</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>io.dropwizard</groupId>
+                        <artifactId>dropwizard-logging</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>io.dropwizard</groupId>
+                        <artifactId>dropwizard-metrics</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>io.dropwizard</groupId>
+                        <artifactId>dropwizard-jersey</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>io.dropwizard</groupId>
+                        <artifactId>dropwizard-servlets</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>io.dropwizard</groupId>
+                        <artifactId>dropwizard-jetty</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>io.dropwizard.metrics</groupId>
+                        <artifactId>metrics-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>io.dropwizard.metrics</groupId>
+                        <artifactId>metrics-jvm</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>io.dropwizard.metrics</groupId>
+                        <artifactId>metrics-servlets</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>io.dropwizard.metrics</groupId>
+                        <artifactId>metrics-healthchecks</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>net.sourceforge.argparse4j</groupId>
+                        <artifactId>argparse4j</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.eclipse.jetty.toolchain.setuid</groupId>
+                        <artifactId>jetty-setuid-java</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jooq</groupId>
+                <artifactId>jool</artifactId>
+                <version>0.9.7</version>
             </dependency>
 
             <dependency>
@@ -130,14 +188,9 @@
 
     <repositories>
         <repository>
-            <id>boundary-private</id>
-            <name>Boundary Private</name>
-            <url>http://maven.eng.boundary.com/artifactory/repo</url>
-        </repository>
-        <repository>
-            <id>maven.boundary.com</id>
-            <name>maven.boundary.com-releases</name>
-            <url>http://maven.boundary.com/artifactory/external</url>
+            <id>artifact-01.boundary.us-west-2</id>
+            <name>artifact-01.boundary.us-west-2-releases</name>
+            <url>https://artifact-01.boundary.us-west-2/artifactory/repo</url>
         </repository>
         <repository>
             <snapshots>
@@ -151,14 +204,14 @@
 
     <distributionManagement>
         <repository>
-            <id>maven.cid1.boundary.com</id>
-            <name>maven.boundary.com-releases</name>
-            <url>http://maven.cid1.boundary.com/artifactory/internal</url>
+            <id>artifact-01.boundary.us-west-2</id>
+            <name>artifact-01.boundary.us-west-2-releases</name>
+            <url>https://artifact-01.boundary.us-west-2/artifactory/internal</url>
         </repository>
         <snapshotRepository>
-            <id>maven.cid1.boundary.com</id>
-            <name>maven.boundary.com-snapshots</name>
-            <url>http://maven.cid1.boundary.com/artifactory/internal</url>
+            <id>artifact-01.boundary.us-west-2</id>
+            <name>artifact-01.boundary.us-west-2-snapshots</name>
+            <url>https://artifact-01.boundary.us-west-2/artifactory/internal</url>
         </snapshotRepository>
     </distributionManagement>
 
