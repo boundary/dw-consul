@@ -3,6 +3,7 @@ package com.boundary.dropwizard.consul.loadbalancer;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.common.net.HostAndPort;
 import com.orbitz.consul.cache.ConsulCache;
 import com.orbitz.consul.cache.ServiceHealthCache;
 import com.orbitz.consul.model.health.ServiceHealth;
@@ -22,12 +23,12 @@ import java.util.function.Function;
  * providing a round-robin client supplier where clients are lazily created and removed when
  * not needed.
  */
-public class RoundRobin<CLIENT> implements ConsulCache.Listener<ServiceHealth>, LoadBalancer<CLIENT> {
+public class RoundRobin<CLIENT> implements ConsulCache.Listener<HostAndPort, ServiceHealth>, LoadBalancer<CLIENT> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(RoundRobin.class);
 
     private final Function<ServiceHealth, CLIENT> clientFactory;
-    private final ConcurrentMap<String, CLIENT> clientCache = Maps.newConcurrentMap();
+    private final ConcurrentMap<HostAndPort, CLIENT> clientCache = Maps.newConcurrentMap();
     private Iterator<CLIENT> clientIterator = Collections.emptyIterator();
 
     /**
@@ -43,7 +44,7 @@ public class RoundRobin<CLIENT> implements ConsulCache.Listener<ServiceHealth>, 
     }
 
     @Override
-    public void notify(Map<String, ServiceHealth> newValues) {
+    public void notify(Map<HostAndPort, ServiceHealth> newValues) {
         synchronized (this) {
             // clear entries if needed
             Sets.difference(clientCache.keySet(), newValues.keySet())
@@ -56,7 +57,7 @@ public class RoundRobin<CLIENT> implements ConsulCache.Listener<ServiceHealth>, 
         }
     }
 
-    private CLIENT createAndStore(Tuple2<String, ServiceHealth> entry) {
+    private CLIENT createAndStore(Tuple2<HostAndPort, ServiceHealth> entry) {
         return clientCache.computeIfAbsent(entry.v1(), k -> {
             try {
                 return clientFactory.apply(entry.v2());
@@ -73,7 +74,7 @@ public class RoundRobin<CLIENT> implements ConsulCache.Listener<ServiceHealth>, 
     }
 
     @VisibleForTesting
-    protected ConcurrentMap<String, CLIENT> getClientCache() {
+    protected ConcurrentMap<HostAndPort, CLIENT> getClientCache() {
         return clientCache;
     }
 }

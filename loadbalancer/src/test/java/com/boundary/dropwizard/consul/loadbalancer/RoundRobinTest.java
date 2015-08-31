@@ -1,6 +1,7 @@
 package com.boundary.dropwizard.consul.loadbalancer;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.net.HostAndPort;
 import com.orbitz.consul.cache.ServiceHealthCache;
 import com.orbitz.consul.model.health.ImmutableNode;
 import com.orbitz.consul.model.health.ImmutableService;
@@ -85,9 +86,9 @@ public class RoundRobinTest {
         assertEquals(2, loadBalancer.getClientCache().size());
     }
 
-    private Map<String, ServiceHealth> serviceMap(ImmutableList<String> nodes) {
+    private Map<HostAndPort, ServiceHealth> serviceMap(ImmutableList<String> nodes) {
         return Seq.seq(nodes)
-                .toMap(s -> s, this::serviceHealth);
+                .toMap(s -> HostAndPort.fromHost(s).withDefaultPort(8080), this::serviceHealth);
 
     };
 

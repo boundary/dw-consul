@@ -15,7 +15,7 @@
     <properties>
         <guava.version>18.0</guava.version>
         <dropwizard.version>0.8.1</dropwizard.version>
-        <orbitz.consul.version>0.9.8</orbitz.consul.version>
+        <orbitz.consul.version>0.9.9</orbitz.consul.version>
     </properties>
 
     <dependencyManagement>
