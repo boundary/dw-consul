@@ -55,7 +55,7 @@ public class RoundRobinTest {
                 createdClients.add(client);
             }
             assertEquals(createdClients.get(i % initialNodes.size()), client);
-            assertEquals(Math.min(i + 1, initialNodes.size()), loadBalancer.getClientCache().size());
+            assertEquals(initialNodes.size(), loadBalancer.getClientCache().size());
 
         });
         assertEquals(2, created.get());
