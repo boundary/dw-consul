@@ -9,13 +9,13 @@ import com.orbitz.consul.model.health.ImmutableServiceHealth;
 import com.orbitz.consul.model.health.Node;
 import com.orbitz.consul.model.health.Service;
 import com.orbitz.consul.model.health.ServiceHealth;
-import org.jooq.lambda.Seq;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.Assert.assertEquals;
@@ -87,8 +87,8 @@ public class RoundRobinTest {
     }
 
     private Map<HostAndPort, ServiceHealth> serviceMap(ImmutableList<String> nodes) {
-        return Seq.seq(nodes)
-                .toMap(s -> HostAndPort.fromHost(s).withDefaultPort(8080), this::serviceHealth);
+        return nodes.stream()
+                .collect(Collectors.toMap(s -> HostAndPort.fromHost(s).withDefaultPort(8080),  this::serviceHealth));
 
     };
 

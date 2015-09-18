@@ -42,7 +42,7 @@ public class RoundRobin<CLIENT> implements ConsulCache.Listener<HostAndPort, Ser
     }
 
     @Override
-    public synchronized void notify(Map<HostAndPort, ServiceHealth> newValues) {
+    public void notify(Map<HostAndPort, ServiceHealth> newValues) {
 
         Sets.SetView<HostAndPort> toRemove = Sets.difference(clientCache.keySet(), newValues.keySet());
 
@@ -51,8 +51,10 @@ public class RoundRobin<CLIENT> implements ConsulCache.Listener<HostAndPort, Ser
         if (!toRemove.isEmpty()) {
             toRemove.forEach(clientCache::remove);
         }
-        currentList = ImmutableList.copyOf(clientCache.values());
-        idx=0;
+        synchronized (this) {
+            currentList = ImmutableList.copyOf(clientCache.values());
+            idx=0;
+        }
     }
 
     private void createAndStore(HostAndPort hostAndPort, ServiceHealth serviceHealth) {
