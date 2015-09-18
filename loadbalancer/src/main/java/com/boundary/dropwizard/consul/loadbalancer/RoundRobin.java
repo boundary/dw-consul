@@ -1,19 +1,16 @@
 package com.boundary.dropwizard.consul.loadbalancer;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.net.HostAndPort;
 import com.orbitz.consul.cache.ConsulCache;
 import com.orbitz.consul.cache.ServiceHealthCache;
 import com.orbitz.consul.model.health.ServiceHealth;
-import org.jooq.lambda.Seq;
-import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
@@ -29,12 +26,13 @@ public class RoundRobin<CLIENT> implements ConsulCache.Listener<HostAndPort, Ser
 
     private final Function<ServiceHealth, CLIENT> clientFactory;
     private final ConcurrentMap<HostAndPort, CLIENT> clientCache = Maps.newConcurrentMap();
-    private Iterator<CLIENT> clientIterator = Collections.emptyIterator();
+    private ImmutableList<CLIENT> currentList = ImmutableList.of();
+    private volatile int idx = 0;
 
     /**
      * Creates the {@link LoadBalancer} impl
      *
-     * @param healthCache a configured {@link ServiceHealthCache} for your service entries
+     * @param healthCache   a configured {@link ServiceHealthCache} for your service entries
      * @param clientFactory function to create CLIENT instances
      */
     public RoundRobin(ServiceHealthCache healthCache,
@@ -45,22 +43,24 @@ public class RoundRobin<CLIENT> implements ConsulCache.Listener<HostAndPort, Ser
 
     @Override
     public void notify(Map<HostAndPort, ServiceHealth> newValues) {
-        synchronized (this) {
-            // clear entries if needed
-            Sets.difference(clientCache.keySet(), newValues.keySet())
-                    .forEach(clientCache::remove);
 
-            // setup a new iterator
-            clientIterator = Seq.seq(newValues).cycle()
-                    .map(this::createAndStore)
-                    .iterator();
+        Sets.SetView<HostAndPort> toRemove = Sets.difference(clientCache.keySet(), newValues.keySet());
+
+        newValues.forEach(this::createAndStore);
+
+        if (!toRemove.isEmpty()) {
+            toRemove.forEach(clientCache::remove);
+        }
+        synchronized (this) {
+            currentList = ImmutableList.copyOf(clientCache.values());
+            idx=0;
         }
     }
 
-    private CLIENT createAndStore(Tuple2<HostAndPort, ServiceHealth> entry) {
-        return clientCache.computeIfAbsent(entry.v1(), k -> {
+    private void createAndStore(HostAndPort hostAndPort, ServiceHealth serviceHealth) {
+        clientCache.computeIfAbsent(hostAndPort, k -> {
             try {
-                return clientFactory.apply(entry.v2());
+                return clientFactory.apply(serviceHealth);
             } catch (Exception e) {
                 LOGGER.error("Error creating a client", e);
                 return null;
@@ -70,7 +70,15 @@ public class RoundRobin<CLIENT> implements ConsulCache.Listener<HostAndPort, Ser
 
     @Override
     public CLIENT getClient() {
-        return clientIterator.hasNext() ? clientIterator.next() : null;
+        if (size() == 0) {
+            LOGGER.warn("no clients available");
+            return null;
+        }
+        return currentList.get(++idx % size());
+    }
+
+    private int size() {
+        return currentList.size();
     }
 
     @VisibleForTesting
