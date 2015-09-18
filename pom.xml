@@ -5,7 +5,7 @@
     <groupId>com.boundary.dropwizard.consul</groupId>
     <artifactId>dw-consul</artifactId>
     <packaging>pom</packaging>
-    <version>0.7-SNAPSHOT</version>
+    <version>0.7</version>
     <modules>
         <module>client</module>
         <module>registration</module>
@@ -261,7 +261,7 @@
 
     <scm>
         <connection>scm:git:ssh://git@vcs.boundary.us-west-2/services/dw-consul.git</connection>
-        <tag>HEAD</tag>
+        <tag>dw-consul-0.7</tag>
     </scm>
 
 </project>
