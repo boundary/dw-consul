@@ -1,0 +1,4 @@
+lb:
+  serviceName: test-service
+  serviceTag: test-tag
+  watchSeconds: 42
