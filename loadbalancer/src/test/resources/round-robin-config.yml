@@ -1,0 +1,5 @@
+lb:
+  type: round-robin
+  serviceName: test-service
+  serviceTag: test-tag
+  watchSeconds: 42

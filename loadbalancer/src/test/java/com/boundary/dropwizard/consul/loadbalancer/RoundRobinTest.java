@@ -29,12 +29,6 @@ public class RoundRobinTest {
     private RoundRobin<FakeClient> loadBalancer;
 
 
-    private static class FakeClient {
-        private final ServiceHealth serviceHealth;
-        private FakeClient(ServiceHealth serviceHealth) {
-            this.serviceHealth = serviceHealth;
-        }
-    }
     @Test
     public void testServiceListener() {
 

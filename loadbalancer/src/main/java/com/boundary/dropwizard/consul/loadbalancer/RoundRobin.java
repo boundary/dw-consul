@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
-import java.util.function.Function;
 
 /**
  * Bridges consul {@link ServiceHealth} entries with CLIENT instances,
@@ -24,7 +23,7 @@ public class RoundRobin<CLIENT> implements ConsulCache.Listener<HostAndPort, Ser
 
     private final static Logger LOGGER = LoggerFactory.getLogger(RoundRobin.class);
 
-    private final Function<ServiceHealth, CLIENT> clientFactory;
+    private final ClientFactory<CLIENT> clientFactory;
     private final ConcurrentMap<HostAndPort, CLIENT> clientCache = Maps.newConcurrentMap();
     private ImmutableList<CLIENT> currentList = ImmutableList.of();
     private volatile int idx = 0;
@@ -36,7 +35,7 @@ public class RoundRobin<CLIENT> implements ConsulCache.Listener<HostAndPort, Ser
      * @param clientFactory function to create CLIENT instances
      */
     public RoundRobin(ServiceHealthCache healthCache,
-                      Function<ServiceHealth, CLIENT> clientFactory) {
+                      ClientFactory<CLIENT> clientFactory) {
         this.clientFactory = clientFactory;
         healthCache.addListener(this);
     }
@@ -60,7 +59,7 @@ public class RoundRobin<CLIENT> implements ConsulCache.Listener<HostAndPort, Ser
     private void createAndStore(HostAndPort hostAndPort, ServiceHealth serviceHealth) {
         clientCache.computeIfAbsent(hostAndPort, k -> {
             try {
-                return clientFactory.apply(serviceHealth);
+                return clientFactory.create(serviceHealth);
             } catch (Exception e) {
                 LOGGER.error("Error creating a client", e);
                 return null;
