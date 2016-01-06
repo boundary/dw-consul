@@ -77,9 +77,6 @@ In your configuration class:
 In your application class:
 
 ```java
-
-        // get a consul-client object. see https://github.com/OrbitzWorldwide/consul-client for more info
-        Consul consul = configuration.getConsul().build(environment);
         
         // register your configured application services in consul
         configuration.getRegistration().register(environment, consul.agentClient());
@@ -121,7 +118,7 @@ In your application class:
 
 // create typed ClientFactory instance
 // that will create a client of your choosing
-// based on a [ServiceHealth](https://github.com/OrbitzWorldwide/consul-client/blob/master/src/main/java/com/orbitz/consul/model/health/ServiceHealth.java) instance
+// based on a ServiceHealth (https://github.com/OrbitzWorldwide/consul-client/blob/master/src/main/java/com/orbitz/consul/model/health/ServiceHealth.java) instance
 final ClientFactory<CLIENT>> clientFactory = // call your clientFactory code
 
 final LoadBalancer<CLIENT> lb = configuration.getLoadBalancer().build(env, consul.healthClient(), clientFactory);
@@ -163,6 +160,7 @@ loadBalancer:
   type: round-robin
   serviceName: {targetServicName}
   serviceTag: {optional service tag}
+  watchSeconds: 30
 
 ```
 
