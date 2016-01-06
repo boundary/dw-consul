@@ -13,18 +13,17 @@ healthClient for service discovery.
 
 ```xml
 
-        <dependency>
-            <groupId>com.boundary.dropwizard.consul</groupId>
-            <artifactId>registration</artifactId>
-            <version>0.8</version>
-        </dependency>
+    <dependency>
+        <groupId>com.boundary.dropwizard.consul</groupId>
+        <artifactId>registration</artifactId>
+        <version>0.8</version>
+    </dependency>
 ```
 
 ## code examples:
 
 These examples build upon each other - use of either `loadbalancer` or `registration` modules requires
-the `client` module.
-
+the `client` module. 
 
 # client example
 
@@ -59,10 +58,21 @@ consul:
 
 # registration example:
 
+
 In your configuration class:
 
 ```java
 
+
+    @Valid
+    @NotNull
+    @JsonProperty("consul")
+    private ConsulClientConfig consul = new ConsulClientConfig();
+    
+    public ConsulClientConfig getConsul() {
+       return consul;
+    }
+    
     @Valid
     @NotNull
     @JsonProperty("registration")
@@ -77,9 +87,11 @@ In your configuration class:
 In your application class:
 
 ```java
-        
-        // register your configured application services in consul
-        configuration.getRegistration().register(environment, consul.agentClient());
+
+    Consul consul = configuration.getConsul().build(environment);
+
+    // register your configured application services in consul
+    configuration.getRegistration().register(environment, consul.agentClient());
 
 ```
 
@@ -101,6 +113,16 @@ In your configuration class:
 
 ```java
 
+
+    @Valid
+    @NotNull
+    @JsonProperty("consul")
+    private ConsulClientConfig consul = new ConsulClientConfig();
+    
+    public ConsulClientConfig getConsul() {
+       return consul;
+    }
+
     @JsonProperty
     @Valid
     @NotNull
@@ -116,13 +138,15 @@ In your application class:
 
 ```java
 
-// create typed ClientFactory instance
-// that will create a client of your choosing
-// based on a ServiceHealth (https://github.com/OrbitzWorldwide/consul-client/blob/master/src/main/java/com/orbitz/consul/model/health/ServiceHealth.java) instance
-final ClientFactory<CLIENT>> clientFactory = // call your clientFactory code
+    Consul consul = configuration.getConsul().build(environment);
 
-final LoadBalancer<CLIENT> lb = configuration.getLoadBalancer().build(env, consul.healthClient(), clientFactory);
-// now call lb.getClient() each time you need to make a request to the target service
+    // create typed ClientFactory instance
+    // that will create a client of your choosing
+    // based on a ServiceHealth (https://github.com/OrbitzWorldwide/consul-client/blob/master/src/main/java/com/orbitz/consul/model/health/ServiceHealth.java) instance
+    final ClientFactory<CLIENT>> clientFactory = // call your clientFactory code
+    
+    final LoadBalancer<CLIENT> lb = configuration.getLoadBalancer().build(env, consul.healthClient(), clientFactory);
+    // now call lb.getClient() each time you need to make a request to the target service
 
 ```
 
