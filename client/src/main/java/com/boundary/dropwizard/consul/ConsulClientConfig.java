@@ -17,7 +17,9 @@ public class ConsulClientConfig {
 
 
     public Consul build(Environment env) {
-        return Consul.newClient(agent.getHostText(), agent.getPortOrDefault(DEFAULT_PORT));
+        return Consul.builder()
+                .withHostAndPort(agent)
+                .build();
     }
 
 }
