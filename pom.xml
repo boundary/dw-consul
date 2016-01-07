@@ -200,35 +200,31 @@
 
     <repositories>
         <repository>
-            <id>artifact-01.boundary.us-west-2</id>
-            <name>artifact-01.boundary.us-west-2-releases</name>
-            <url>https://artifact-01.boundary.us-west-2/artifactory/repo</url>
+            <id>ts-saas</id>
+            <name>TrueSight Saas Releases</name>
+            <url>http://onebuild.bmc.com:8081/nexus/content/repositories/ts-saas-release</url>
         </repository>
         <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>central</id>
-            <name>bintray</name>
-            <url>http://jcenter.bintray.com</url>
+            <id>thirdparty</id>
+            <url>http://onebuild.bmc.com:8081/nexus/content/repositories/thirdparty</url>
         </repository>
     </repositories>
 
     <distributionManagement>
-        <repository>
-            <id>artifact-01.boundary.us-west-2</id>
-            <name>artifact-01.boundary.us-west-2-releases</name>
-            <url>https://artifact-01.boundary.us-west-2/artifactory/internal</url>
-        </repository>
         <snapshotRepository>
-            <id>artifact-01.boundary.us-west-2</id>
-            <name>artifact-01.boundary.us-west-2-snapshots</name>
-            <url>https://artifact-01.boundary.us-west-2/artifactory/internal</url>
+            <id>ts-saas</id>
+            <name>TrueSight Saas Snapshots</name>
+            <url>http://onebuild.bmc.com:8081/nexus/content/repositories/ts-saas-snapshot</url>
         </snapshotRepository>
+        <repository>
+            <id>ts-saas</id>
+            <name>TrueSight Saas Releases</name>
+            <url>http://onebuild.bmc.com:8081/nexus/content/repositories/ts-saas-release</url>
+        </repository>
     </distributionManagement>
 
     <scm>
-        <connection>scm:git:ssh://git@vcs.boundary.us-west-2/services/dw-consul.git</connection>
+        <connection>scm:git:ssh://git@github.bmc.com/ts-saas/dw-consul.git</connection>
         <tag>HEAD</tag>
     </scm>
 
