@@ -6,10 +6,13 @@ Current implementation allows quick configuration and setup of a managed [Consul
 registration of multiple service endpoints hooked into the dropwizard app life cycle, and a dropwizard-friendly load balancer using consul
 healthClient for service discovery.
 
+## Motivation
 
-## usage
+Provide a shared, consistent method to make use of consul within dropwizard applications for service registration and discovery.
 
-# Maven:
+## Installation
+
+# Maven
 
 ```xml
 
@@ -20,12 +23,18 @@ healthClient for service discovery.
     </dependency>
 ```
 
-## code examples:
+
+Current implementation allows quick configuration and setup of a managed [Consul client](https://github.com/OrbitzWorldwide/consul-client), 
+registration of multiple service endpoints hooked into the dropwizard app life cycle, and a dropwizard-friendly load balancer using consul
+healthClient for service discovery.
+
+
+## Usage
 
 These examples build upon each other - use of either `loadbalancer` or `registration` modules requires
 the `client` module. 
 
-# client example
+# Client example
 
 
 ```java
@@ -56,7 +65,7 @@ consul:
   
 ``` 
 
-# registration example:
+# Registration example:
 
 
 In your configuration class:
@@ -106,7 +115,7 @@ registration:
 
 ```
 
-# load balancer example
+# Load balancer example
 
 
 In your configuration class:
@@ -233,7 +242,6 @@ Using the registration module, here's an example of you you might get under the 
 You can query these healthy nodes based on tags as `curl 127.0.0.1:8500/v1/health/service/sasquatch?tag=jmx`. See the [consul api docs](http://www.consul.io/docs/agent/http.html) for more info.
 
 
-# tests
+# Tests
 
 To run the tests, clone the repo and run `mvn test` from the parent directory.
-
