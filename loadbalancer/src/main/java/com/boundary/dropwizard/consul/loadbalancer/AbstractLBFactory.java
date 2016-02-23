@@ -32,14 +32,25 @@ public abstract class AbstractLBFactory implements LBFactory {
         return serviceName;
     }
 
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
     public Optional<String> getServiceTag() {
         return serviceTag;
+    }
+
+    public void setServiceTag(Optional<String> serviceTag) {
+        this.serviceTag = serviceTag;
     }
 
     public int getWatchSeconds() {
         return watchSeconds;
     }
 
+    public void setWatchSeconds(int watchSeconds) {
+        this.watchSeconds = watchSeconds;
+    }
 
     protected ServiceHealthCache buildCache(Environment env, HealthClient healthClient) {
         final CatalogOptions catalogOptions;

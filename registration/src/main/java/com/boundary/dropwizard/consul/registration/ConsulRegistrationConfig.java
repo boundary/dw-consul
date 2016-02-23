@@ -76,36 +76,55 @@ public class ConsulRegistrationConfig {
         return services;
     }
 
-    public void setRegisterJmx(boolean registerJmx) {
-        this.registerJmx = registerJmx;
+    public String getHealthConnectorName() {
+        return healthConnectorName;
     }
 
-    public void setServices(Map<String, Integer> services) {
-        this.services = services;
-    }
-
-    public String getTagSeparator() {
-        return tagSeparator;
-    }
-
-    public Duration getCheckInterval() {
-        return checkInterval;
-    }
-
-    public boolean isRegisterJmx() {
-        return registerJmx;
-    }
-
-    public String getHealthUrl() {
-        return healthUrl;
+    public void setHealthConnectorName(String healthConnectorName) {
+        this.healthConnectorName = healthConnectorName;
     }
 
     public Optional<String> getServiceName() {
         return serviceName;
     }
 
-    public String getHealthConnectorName() {
-        return healthConnectorName;
+    public void setServiceName(Optional<String> serviceName) {
+        this.serviceName = serviceName;
     }
 
+    public String getHealthUrl() {
+        return healthUrl;
+    }
+
+    public void setHealthUrl(String healthUrl) {
+        this.healthUrl = healthUrl;
+    }
+
+    public boolean isRegisterJmx() {
+        return registerJmx;
+    }
+
+    public void setRegisterJmx(boolean registerJmx) {
+        this.registerJmx = registerJmx;
+    }
+
+    public Duration getCheckInterval() {
+        return checkInterval;
+    }
+
+    public void setCheckInterval(Duration checkInterval) {
+        this.checkInterval = checkInterval;
+    }
+
+    public String getTagSeparator() {
+        return tagSeparator;
+    }
+
+    public void setTagSeparator(String tagSeparator) {
+        this.tagSeparator = tagSeparator;
+    }
+
+    public void setServices(Map<String, Integer> services) {
+        this.services = services;
+    }
 }
