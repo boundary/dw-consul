@@ -8,6 +8,7 @@ import io.dropwizard.setup.Environment;
 import io.dropwizard.util.Duration;
 import io.dropwizard.validation.MinDuration;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.valuehandling.UnwrapValidatedValue;
 
 import javax.validation.constraints.NotNull;
 import java.util.Map;
@@ -23,6 +24,7 @@ public class ConsulRegistrationConfig {
 
     @NotNull
     @JsonProperty
+    @UnwrapValidatedValue(false)
     private Optional<String> serviceName = Optional.empty();
 
     @NotEmpty

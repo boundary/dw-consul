@@ -8,6 +8,7 @@ import com.orbitz.consul.option.ImmutableCatalogOptions;
 import io.dropwizard.lifecycle.Managed;
 import io.dropwizard.setup.Environment;
 import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.valuehandling.UnwrapValidatedValue;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -22,6 +23,7 @@ public abstract class AbstractLBFactory implements LBFactory {
 
     @JsonProperty
     @NotNull
+    @UnwrapValidatedValue(false)
     private Optional<String> serviceTag = Optional.empty();
 
     @JsonProperty

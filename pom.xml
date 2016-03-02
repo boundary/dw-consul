@@ -14,7 +14,7 @@
 
     <properties>
         <guava.version>18.0</guava.version>
-        <dropwizard.version>0.8.1</dropwizard.version>
+        <dropwizard.version>0.9.2</dropwizard.version>
         <orbitz.consul.version>0.9.16</orbitz.consul.version>
     </properties>
 
@@ -80,7 +80,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jdk8</artifactId>
-                <version>2.5.1</version>
+                <version>2.6.3</version>
             </dependency>
 
             <!-- test deps -->
