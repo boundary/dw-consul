@@ -4,9 +4,9 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.common.net.HostAndPort;
 import com.orbitz.consul.cache.ConsulCache;
 import com.orbitz.consul.cache.ServiceHealthCache;
+import com.orbitz.consul.cache.ServiceHealthKey;
 import com.orbitz.consul.model.health.ServiceHealth;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,12 +19,12 @@ import java.util.concurrent.ConcurrentMap;
  * providing a round-robin client supplier where clients are lazily created and removed when
  * not needed.
  */
-public class RoundRobin<CLIENT> implements ConsulCache.Listener<HostAndPort, ServiceHealth>, LoadBalancer<CLIENT> {
+public class RoundRobin<CLIENT> implements ConsulCache.Listener<ServiceHealthKey, ServiceHealth>, LoadBalancer<CLIENT> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(RoundRobin.class);
 
     private final ClientFactory<CLIENT> clientFactory;
-    private final ConcurrentMap<HostAndPort, CLIENT> clientCache = Maps.newConcurrentMap();
+    private final ConcurrentMap<ServiceHealthKey, CLIENT> clientCache = Maps.newConcurrentMap();
     private ImmutableList<CLIENT> currentList = ImmutableList.of();
     private volatile int idx = 0;
 
@@ -41,9 +41,9 @@ public class RoundRobin<CLIENT> implements ConsulCache.Listener<HostAndPort, Ser
     }
 
     @Override
-    public void notify(Map<HostAndPort, ServiceHealth> newValues) {
+    public void notify(Map<ServiceHealthKey, ServiceHealth> newValues) {
 
-        Sets.SetView<HostAndPort> toRemove = Sets.difference(clientCache.keySet(), newValues.keySet());
+        Sets.SetView<ServiceHealthKey> toRemove = Sets.difference(clientCache.keySet(), newValues.keySet());
 
         newValues.forEach(this::createAndStore);
 
@@ -56,8 +56,8 @@ public class RoundRobin<CLIENT> implements ConsulCache.Listener<HostAndPort, Ser
         }
     }
 
-    private void createAndStore(HostAndPort hostAndPort, ServiceHealth serviceHealth) {
-        clientCache.computeIfAbsent(hostAndPort, k -> {
+    private void createAndStore(ServiceHealthKey serviceHealthKey, ServiceHealth serviceHealth) {
+        clientCache.computeIfAbsent(serviceHealthKey, k -> {
             try {
                 return clientFactory.create(serviceHealth);
             } catch (Exception e) {
@@ -81,7 +81,7 @@ public class RoundRobin<CLIENT> implements ConsulCache.Listener<HostAndPort, Ser
     }
 
     @VisibleForTesting
-    protected ConcurrentMap<HostAndPort, CLIENT> getClientCache() {
+    protected ConcurrentMap<ServiceHealthKey, CLIENT> getClientCache() {
         return clientCache;
     }
 }

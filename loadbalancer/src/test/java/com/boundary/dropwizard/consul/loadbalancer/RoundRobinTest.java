@@ -1,8 +1,8 @@
 package com.boundary.dropwizard.consul.loadbalancer;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.net.HostAndPort;
 import com.orbitz.consul.cache.ServiceHealthCache;
+import com.orbitz.consul.cache.ServiceHealthKey;
 import com.orbitz.consul.model.health.ImmutableNode;
 import com.orbitz.consul.model.health.ImmutableService;
 import com.orbitz.consul.model.health.ImmutableServiceHealth;
@@ -54,7 +54,7 @@ public class RoundRobinTest {
         });
         assertEquals(2, created.get());
 
-        ImmutableList<String>  secondaryNodes = ImmutableList.<String>builder().addAll(initialNodes).add("6.7.8.9").build();
+        ImmutableList<String> secondaryNodes = ImmutableList.<String>builder().addAll(initialNodes).add("6.7.8.9").build();
 
         List<FakeClient> secondaryCreatedClients = new ArrayList<>();
 
@@ -80,15 +80,17 @@ public class RoundRobinTest {
         assertEquals(2, loadBalancer.getClientCache().size());
     }
 
-    private Map<HostAndPort, ServiceHealth> serviceMap(ImmutableList<String> nodes) {
+    private Map<ServiceHealthKey, ServiceHealth> serviceMap(ImmutableList<String> nodes) {
         return nodes.stream()
-                .collect(Collectors.toMap(s -> HostAndPort.fromHost(s).withDefaultPort(8080),  this::serviceHealth));
-
-    };
+                .collect(Collectors.toMap(s -> ServiceHealthKey.of("service_id", s, 8080), this::serviceHealth));
+    }
 
     private ServiceHealth serviceHealth(String address) {
 
-        Node n = ImmutableNode.fromAllAttributes(address, address);
+        Node n = ImmutableNode.builder()
+                .node(address)
+                .address(address)
+                .build();
         Service s = ImmutableService
                 .builder()
                 .address(address)
