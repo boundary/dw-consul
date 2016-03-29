@@ -83,7 +83,7 @@ public abstract class AbstractLBFactory implements LBFactory {
 
             @Override
             public void stop() throws Exception {
-                // todo add cache.shutdown
+                cache.stop();
             }
         });
 
