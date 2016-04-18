@@ -16,7 +16,7 @@ public class ConsulClientConfig {
     private HostAndPort agent = HostAndPort.fromParts("localhost", DEFAULT_PORT);
 
 
-    public Consul build(Environment env) {
+    public Consul build() {
         return Consul.builder()
                 .withHostAndPort(agent)
                 .build();
