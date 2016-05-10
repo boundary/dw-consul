@@ -12,6 +12,14 @@
         <module>loadbalancer</module>
     </modules>
 
+    <developers>
+        <developer>
+            <id>gjesse</id>
+            <name>Jesse Hodges</name>
+            <email>jesse_hodges@bmc.com</email>
+        </developer>
+    </developers>
+
     <properties>
         <guava.version>18.0</guava.version>
         <dropwizard.version>0.9.2</dropwizard.version>
