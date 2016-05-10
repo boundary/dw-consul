@@ -197,41 +197,19 @@
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>ts-saas</id>
-            <name>TrueSight Saas Releases</name>
-            <url>http://onebuild.bmc.com:8081/nexus/content/repositories/ts-saas-release</url>
-        </repository>
-        <repository>
-            <id>thirdparty</id>
-            <url>http://onebuild.bmc.com:8081/nexus/content/repositories/thirdparty</url>
-        </repository>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>central</id>
-            <name>bintray</name>
-            <url>http://jcenter.bintray.com</url>
-        </repository>
-    </repositories>
-
     <distributionManagement>
         <snapshotRepository>
-            <id>ts-saas</id>
-            <name>TrueSight Saas Snapshots</name>
-            <url>http://onebuild.bmc.com:8081/nexus/content/repositories/ts-saas-snapshot</url>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
         <repository>
-            <id>ts-saas</id>
-            <name>TrueSight Saas Releases</name>
-            <url>http://onebuild.bmc.com:8081/nexus/content/repositories/ts-saas-release</url>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
 
     <scm>
-        <connection>scm:git:ssh://git@github.bmc.com/ts-saas/dw-consul.git</connection>
+        <connection>scm:git:ssh://git@github.com:boundary/dw-consul.git</connection>
         <tag>HEAD</tag>
     </scm>
 
