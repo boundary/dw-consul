@@ -217,7 +217,9 @@
     </distributionManagement>
 
     <scm>
-        <connection>scm:git:ssh://git@github.com:boundary/dw-consul.git</connection>
+        <url>https://github.com/boundary/dw-consul</url>
+        <connection>scm:git:ssh://git@github.com/boundary/dw-consul.git</connection>
+        <developerConnection>scm:git:git@github.com:boundary/dw-consul.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
