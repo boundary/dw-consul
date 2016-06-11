@@ -1,8 +1,8 @@
-### dw-consul
+# dw-consul
 
 Tools for integrating consul with dropwizard applications.
 
-Current implementation allows quick configuration and setup of a managed [Consul client](https://github.com/OrbitzWorldwide/consul-client), 
+Current implementation allows quick configuration and setup of a managed [Consul client](https://github.com/OrbitzWorldwide/consul-client),
 registration of multiple service endpoints hooked into the dropwizard app life cycle, and a dropwizard-friendly load balancer using consul
 healthClient for service discovery.
 
@@ -12,7 +12,7 @@ Provide a shared, consistent method to make use of consul within dropwizard appl
 
 ## Installation
 
-# Maven
+### Maven
 
 ```xml
 
@@ -24,7 +24,7 @@ Provide a shared, consistent method to make use of consul within dropwizard appl
 ```
 
 
-Current implementation allows quick configuration and setup of a managed [Consul client](https://github.com/OrbitzWorldwide/consul-client), 
+Current implementation allows quick configuration and setup of a managed [Consul client](https://github.com/OrbitzWorldwide/consul-client),
 registration of multiple service endpoints hooked into the dropwizard app life cycle, and a dropwizard-friendly load balancer using consul
 healthClient for service discovery.
 
@@ -32,9 +32,9 @@ healthClient for service discovery.
 ## Usage
 
 These examples build upon each other - use of either `loadbalancer` or `registration` modules requires
-the `client` module. 
+the `client` module.
 
-# Client example
+### Client example
 
 
 ```java
@@ -43,7 +43,7 @@ the `client` module.
     @NotNull
     @JsonProperty("consul")
     private ConsulClientConfig consul = new ConsulClientConfig();
-    
+
     public ConsulClientConfig getConsul() {
        return consul;
     }
@@ -62,10 +62,10 @@ Configuration:
 ```yml
 consul:
   agent: localhost:8500
-  
-``` 
 
-# Registration example:
+```
+
+### Registration example:
 
 
 In your configuration class:
@@ -77,11 +77,11 @@ In your configuration class:
     @NotNull
     @JsonProperty("consul")
     private ConsulClientConfig consul = new ConsulClientConfig();
-    
+
     public ConsulClientConfig getConsul() {
        return consul;
     }
-    
+
     @Valid
     @NotNull
     @JsonProperty("registration")
@@ -115,7 +115,7 @@ registration:
 
 ```
 
-# Load balancer example
+### Load balancer example
 
 
 In your configuration class:
@@ -127,7 +127,7 @@ In your configuration class:
     @NotNull
     @JsonProperty("consul")
     private ConsulClientConfig consul = new ConsulClientConfig();
-    
+
     public ConsulClientConfig getConsul() {
        return consul;
     }
@@ -153,14 +153,14 @@ In your application class:
     // that will create a client of your choosing
     // based on a ServiceHealth (https://github.com/OrbitzWorldwide/consul-client/blob/master/src/main/java/com/orbitz/consul/model/health/ServiceHealth.java) instance
     final ClientFactory<CLIENT>> clientFactory = // call your clientFactory code
-    
+
     final LoadBalancer<CLIENT> lb = configuration.getLoadBalancer().build(env, consul.healthClient(), clientFactory);
     // now call lb.getClient() each time you need to make a request to the target service
 
 ```
 
 
-Configuration:
+### Configuration:
 
 ```yml
 
@@ -197,7 +197,7 @@ loadBalancer:
 
 ```
 
-# registration format
+### registration format
 
 Using the registration module, here's an example of you you might get under the suggested config, registering a service named 'sasquatch':
 
