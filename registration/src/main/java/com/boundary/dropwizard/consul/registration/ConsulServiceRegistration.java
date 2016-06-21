@@ -1,51 +1,42 @@
 package com.boundary.dropwizard.consul.registration;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableList;
 import com.orbitz.consul.AgentClient;
-import com.orbitz.consul.model.agent.Registration;
 import io.dropwizard.lifecycle.Managed;
-import io.dropwizard.util.Duration;
 
-import java.util.Map;
-import java.util.function.BiConsumer;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 public class ConsulServiceRegistration implements Managed {
 
-    private final BiConsumer<String, Integer> register;
+    private final Consumer<ConsulRegistrationConfig.ServiceConfig> register;
     private final Consumer<String> deregister;
-    private final ImmutableMap<String, Integer> services;
+    private final ImmutableList<ConsulRegistrationConfig.ServiceConfig> services;
 
     public ConsulServiceRegistration(AgentClient agentClient,
                                      String serviceName,
-                                     String healthConnector,
-                                     String healthConnectorUrl,
-                                     Duration checkInterval,
                                      String tagSeparator,
-                                     Map<String, Integer> services) {
+                                     List<ConsulRegistrationConfig.ServiceConfig> services) {
 
-        this.services = ImmutableMap.copyOf(services);
-
+        this.services = ImmutableList.copyOf(services);
         requireNonNull(serviceName);
-        requireNonNull(healthConnector);
-        requireNonNull(healthConnectorUrl);
-        requireNonNull(checkInterval);
         requireNonNull(tagSeparator);
 
-        final Integer healthPort = services.get(healthConnector);
-        checkArgument(healthPort != null, "Health check key [%s] must match a configured service", healthConnector);
-
-        final Registration.RegCheck check = Registration.RegCheck.http(String.format(healthConnectorUrl, healthPort), checkInterval.toSeconds());
-
         final Function<String, String> serviceId = (tag) -> serviceName + tagSeparator + tag;
-        this.register = (tag, port) ->
-                agentClient.register(port, check, serviceName, serviceId.apply(tag), tag);
-        this.deregister = (tag) -> agentClient.deregister(serviceId.apply(tag));
+        this.register = (serviceConfig) -> {
+            agentClient.register(
+                    serviceConfig.getPort(),
+                    serviceConfig.getHealthCheck(),
+                    serviceName,
+                    serviceId.apply(serviceConfig.getServiceTag()),
+                    serviceConfig.getServiceTag()
+            );
+        };
 
+        this.deregister = (tag) -> agentClient.deregister(serviceId.apply(tag));
     }
 
     @Override
@@ -55,6 +46,8 @@ public class ConsulServiceRegistration implements Managed {
 
     @Override
     public void stop() throws Exception {
-        services.keySet().forEach(this.deregister);
+        services.stream()
+                .map(ConsulRegistrationConfig.ServiceConfig::getServiceTag)
+                .forEach(this.deregister);
     }
 }

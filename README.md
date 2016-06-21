@@ -53,7 +53,7 @@ In your application class:
 
 ```java
         // get a consul-client object. see https://github.com/OrbitzWorldwide/consul-client for more info
-        Consul consul = configuration.getConsul().build(environment);
+        Consul consul = configuration.getConsul().build();
 
 ```
 
@@ -97,7 +97,7 @@ In your application class:
 
 ```java
 
-    Consul consul = configuration.getConsul().build(environment);
+    Consul consul = configuration.getConsul().build();
 
     // register your configured application services in consul
     configuration.getRegistration().register(environment, consul.agentClient());
@@ -177,17 +177,18 @@ loadBalancer:
 consul:
   agent: localhost:8500
 
+
 registration:
-  healthConnectorName: admin
   serviceName: serviceName
-  registerJmx: true
-  checkInterval: 10s
-  healthUrl: http://localhost:%d/healthcheck
   tagSeparator: _
-  services:
-    service: {service port}
-    admin: {admin port}
-    other: {other port}
+    services:
+      - serviceTag: service
+        port: {servicePort}
+        healthCheckUrl: http://localhost:11601/healthcheck
+      - serviceTag: admin
+        port: {adminServicePort}
+      - serviceTag: other
+        port: {otherServicePort}
 
 loadBalancer:
   type: round-robin
