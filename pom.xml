@@ -6,6 +6,10 @@
     <artifactId>dw-consul</artifactId>
     <packaging>pom</packaging>
     <version>0.16-SNAPSHOT</version>
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Tools for integrating consul with dropwizard applications.</description>
+    <url>https://github.com/boundary/dw-consul</url>
+
     <modules>
         <module>client</module>
         <module>registration</module>
@@ -19,6 +23,13 @@
             <email>jesse_hodges@bmc.com</email>
         </developer>
     </developers>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
 
     <properties>
         <guava.version>18.0</guava.version>
