@@ -34,6 +34,8 @@ healthClient for service discovery.
 These examples build upon each other - use of either `loadbalancer` or `registration` modules requires
 the `client` module.
 
+For a more complete example, take a look at the example-app, which demonstrates service registration and client usage.
+
 ### Client example
 
 
