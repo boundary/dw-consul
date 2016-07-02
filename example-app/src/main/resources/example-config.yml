@@ -1,0 +1,17 @@
+server:
+  applicationConnectors:
+    - type: http
+      port: 10500
+  adminConnectors:
+    - type: http
+      port: 10501
+
+consul:
+  registration:
+    serviceName: example-app
+    services:
+    - serviceTag: service
+      port: 10500
+      healthCheckUrl: http://localhost:10501/healthcheck
+    - serviceTag: admin
+      port: 10501

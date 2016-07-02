@@ -109,9 +109,14 @@ Configuration:
 ```yml
 
 registration:
-  services:
-    service: {service port}
-    admin: {admin port}
+  serviceName: serviceName
+  tagSeparator: _
+    services:
+      - serviceTag: service
+        port: {servicePort}
+        healthCheckUrl: http://localhost:{adminServicePort}/healthcheck
+      - serviceTag: admin
+        port: {adminServicePort}
 
 ```
 
@@ -249,7 +254,7 @@ To run the tests, clone the repo and run `mvn test` from the parent directory.
 
 # LICENSE
 
-Copyright 2016 BMC
+&copy; Copyright 2015-2016 BMC SOFTWARE, INC.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -262,3 +267,5 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+![BMC Open Source](badge-os.png)
