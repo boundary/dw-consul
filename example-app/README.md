@@ -16,6 +16,6 @@ First, make sure you have a local consul instance available.
   $ # create a key
   $ curl -X PUT -d "the-value" localhost:10500/v1/kv/foo
   $ # verify key
-  $ curl 127.0.0.1:10501/v1/kv/foo
+  $ curl 127.0.0.1:10500/v1/kv/foo
 
 ```
