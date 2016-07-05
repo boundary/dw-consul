@@ -5,7 +5,7 @@
     <groupId>com.boundary.dropwizard.consul</groupId>
     <artifactId>dw-consul</artifactId>
     <packaging>pom</packaging>
-    <version>0.16-SNAPSHOT</version>
+    <version>0.17-SNAPSHOT</version>
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Tools for integrating consul with dropwizard applications.</description>
     <url>https://github.com/boundary/dw-consul</url>
