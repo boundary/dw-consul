@@ -35,7 +35,8 @@
     <properties>
         <guava.version>18.0</guava.version>
         <dropwizard.version>0.9.2</dropwizard.version>
-        <orbitz.consul.version>0.10.1</orbitz.consul.version>
+        <orbitz.consul.version>0.11.3</orbitz.consul.version>
+        <jackson.version>2.6.3</jackson.version>
     </properties>
 
     <dependencyManagement>
@@ -58,40 +59,12 @@
                 <version>${orbitz.consul.version}</version>
                 <exclusions>
                     <exclusion>
-                        <groupId>org.apache.commons</groupId>
-                        <artifactId>commons-lang3</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.fasterxml.jackson.core</groupId>
-                        <artifactId>jackson-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.fasterxml.jackson.core</groupId>
-                        <artifactId>jackson-databind</artifactId>
+                        <groupId>com.google.guava</groupId>
+                        <artifactId>guava</artifactId>
                     </exclusion>
                     <exclusion>
                         <groupId>com.fasterxml.jackson.core</groupId>
                         <artifactId>jackson-annotations</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.fasterxml.jackson.jaxrs</groupId>
-                        <artifactId>jackson-jaxrs-base</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.fasterxml.jackson.jaxrs</groupId>
-                        <artifactId>jackson-jaxrs-json-provider</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.fasterxml.jackson.datatype</groupId>
-                        <artifactId>jackson-datatype-guava</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.cxf</groupId>
-                        <artifactId>cxf-rt-rs-client</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.cxf</groupId>
-                        <artifactId>cxf-rt-transports-http-hc</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -99,7 +72,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jdk8</artifactId>
-                <version>2.6.3</version>
+                <version>${jackson.version}</version>
             </dependency>
 
             <!-- test deps -->
