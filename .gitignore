@@ -2,5 +2,4 @@
 *.iml
 */target
 *~
-example
 dependency-reduced-pom.xml
