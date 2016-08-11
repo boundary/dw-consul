@@ -19,6 +19,10 @@
             <groupId>com.orbitz.consul</groupId>
             <artifactId>consul-client</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
     </dependencies>
 
 
