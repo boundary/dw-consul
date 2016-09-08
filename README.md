@@ -19,7 +19,7 @@ Provide a shared, consistent method to make use of consul within dropwizard appl
     <dependency>
         <groupId>com.boundary.dropwizard.consul</groupId>
         <artifactId>registration</artifactId>
-        <version>0.16</version>
+        <version>0.19</version>
     </dependency>
 ```
 
