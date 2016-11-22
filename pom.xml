@@ -33,9 +33,9 @@
     </licenses>
 
     <properties>
-        <dropwizard.version>1.0.0</dropwizard.version>
-        <orbitz.consul.version>0.12.6</orbitz.consul.version>
-        <jackson.version>2.7.6</jackson.version>
+        <dropwizard.version>1.0.5</dropwizard.version>
+        <orbitz.consul.version>0.13.3</orbitz.consul.version>
+        <jackson.version>2.7.8</jackson.version>
     </properties>
 
     <dependencyManagement>
@@ -69,12 +69,6 @@
             </dependency>
 
             <dependency>
-                <groupId>com.fasterxml.jackson.datatype</groupId>
-                <artifactId>jackson-datatype-jdk8</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
                 <version>${jackson.version}</version>
@@ -102,7 +96,7 @@
             <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
-                <version>3.4.0</version>
+                <version>3.4.1</version>
                 <scope>test</scope>
             </dependency>
 
