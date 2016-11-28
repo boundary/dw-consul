@@ -16,4 +16,13 @@ public class ExampleConfig extends Configuration {
     public ConsulConfig getConsul() {
         return consul;
     }
+
+    @JsonProperty
+    @Valid
+    @NotNull
+    private TemplatedConfig templatedConfig = new TemplatedConfig();
+
+    public TemplatedConfig getTemplatedConfig() {
+        return templatedConfig;
+    }
 }

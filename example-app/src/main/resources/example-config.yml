@@ -15,3 +15,11 @@ consul:
       healthCheckUrl: http://localhost:10501/healthcheck
     - serviceTag: admin
       port: 10501
+templatedConfig:
+  subOne: {% if (kv("foo") != "bar") %}bleh{% else %}blah{% endif %}
+  subTwo: {{ kv("bar/baz", "defaultVal") }}
+  serviceIps: {% for service in healthy_services("redis", "localhost:2222", "master") %}
+    - {{ service -}}
+{% endfor %}
+
+whoop: {{ join(healthy_services("redis", "localhost:2222", "master"), ",") }}

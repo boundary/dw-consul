@@ -1,0 +1,9 @@
+{
+  "ID": "redis2",
+  "Name": "redis",
+  "Tags": [
+    "master",
+    "v1"
+  ],
+  "Port": 8000
+}
