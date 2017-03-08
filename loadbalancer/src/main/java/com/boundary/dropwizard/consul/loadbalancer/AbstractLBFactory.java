@@ -72,20 +72,22 @@ public abstract class AbstractLBFactory implements LBFactory {
                 getWatchSeconds()
         );
 
-        env.lifecycle().manage(new Managed() {
-            @Override
-            public void start() throws Exception {
-                cache.start();
-                if (!cache.awaitInitialized(10, TimeUnit.SECONDS)) {
-                    throw new Exception("load balancer init timeout");
+        if (env != null) {
+            env.lifecycle().manage(new Managed() {
+                @Override
+                public void start() throws Exception {
+                    cache.start();
+                    if (!cache.awaitInitialized(10, TimeUnit.SECONDS)) {
+                        throw new Exception("load balancer init timeout");
+                    }
                 }
-            }
 
-            @Override
-            public void stop() throws Exception {
-                cache.stop();
-            }
-        });
+                @Override
+                public void stop() throws Exception {
+                    cache.stop();
+                }
+            });
+        }
 
         return cache;
     }

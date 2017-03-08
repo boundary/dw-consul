@@ -11,4 +11,9 @@ public class RoundRobinFactory extends AbstractLBFactory {
     public <CLIENT> LoadBalancer<CLIENT> build(Environment env, HealthClient healthClient, ClientFactory<CLIENT> clientFactory) throws Exception {
         return new RoundRobin<>(buildCache(env, healthClient), clientFactory);
     }
+
+    @Override
+    public <CLIENT> LoadBalancer<CLIENT> build(HealthClient healthClient, ClientFactory<CLIENT> clientFactory) throws Exception {
+        return new RoundRobin<>(buildCache(null, healthClient), clientFactory);
+    }
 }
