@@ -58,7 +58,7 @@ public abstract class AbstractLBFactory implements LBFactory {
         this.watchSeconds = watchSeconds;
     }
 
-    protected ServiceHealthCache buildCache(Environment env, HealthClient healthClient) {
+    protected ServiceHealthCache buildCache(Environment env, HealthClient healthClient) throws Exception {
         final CatalogOptions catalogOptions;
         if (getServiceTag().isPresent()) {
             catalogOptions =  ImmutableCatalogOptions.builder()
@@ -95,14 +95,15 @@ public abstract class AbstractLBFactory implements LBFactory {
             try {
                 cache.start();
                 if (!cache.awaitInitialized(10, TimeUnit.SECONDS)) {
-                    LOGGER.error("load balancer init timeout without dropwizard Environment");
+                    LOGGER.error("load balancer init timeout without dropwizard Environment in buildCache");
+                    throw new Exception("load balancer init timeout without dropwizard Environment in buildCache");
                 }
             } catch (InterruptedException iE) {
-                LOGGER.error("caught InterruptedException in buildCache:");
-                iE.printStackTrace();
+                LOGGER.error("caught InterruptedException in buildCache: {}", iE);
+                throw iE;
             } catch (Exception e) {
-                LOGGER.error("caught Exception in buildCache:");
-                e.printStackTrace();
+                LOGGER.error("caught Exception in buildCache: {}", e);
+                throw e;
             }
         }
 
