@@ -9,6 +9,8 @@ import io.dropwizard.lifecycle.Managed;
 import io.dropwizard.setup.Environment;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.valuehandling.UnwrapValidatedValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -29,6 +31,8 @@ public abstract class AbstractLBFactory implements LBFactory {
     @JsonProperty
     @Min(1)
     private int watchSeconds = 30;
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(AbstractLBFactory.class);
 
     public String getServiceName() {
         return serviceName;
@@ -54,7 +58,7 @@ public abstract class AbstractLBFactory implements LBFactory {
         this.watchSeconds = watchSeconds;
     }
 
-    protected ServiceHealthCache buildCache(Environment env, HealthClient healthClient) {
+    protected ServiceHealthCache buildCache(Environment env, HealthClient healthClient) throws Exception {
         final CatalogOptions catalogOptions;
         if (getServiceTag().isPresent()) {
             catalogOptions =  ImmutableCatalogOptions.builder()
@@ -72,20 +76,36 @@ public abstract class AbstractLBFactory implements LBFactory {
                 getWatchSeconds()
         );
 
-        env.lifecycle().manage(new Managed() {
-            @Override
-            public void start() throws Exception {
+        if (env != null) {
+            env.lifecycle().manage(new Managed() {
+                @Override
+                public void start() throws Exception {
+                    cache.start();
+                    if (!cache.awaitInitialized(10, TimeUnit.SECONDS)) {
+                        throw new Exception("load balancer init timeout");
+                    }
+                }
+
+                @Override
+                public void stop() throws Exception {
+                    cache.stop();
+                }
+            });
+        } else {
+            try {
                 cache.start();
                 if (!cache.awaitInitialized(10, TimeUnit.SECONDS)) {
-                    throw new Exception("load balancer init timeout");
+                    LOGGER.error("load balancer init timeout without dropwizard Environment in buildCache");
+                    throw new Exception("load balancer init timeout without dropwizard Environment in buildCache");
                 }
+            } catch (InterruptedException iE) {
+                LOGGER.error("caught InterruptedException in buildCache: {}", iE);
+                throw iE;
+            } catch (Exception e) {
+                LOGGER.error("caught Exception in buildCache: {}", e);
+                throw e;
             }
-
-            @Override
-            public void stop() throws Exception {
-                cache.stop();
-            }
-        });
+        }
 
         return cache;
     }
