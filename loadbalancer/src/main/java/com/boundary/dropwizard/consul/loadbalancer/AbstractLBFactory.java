@@ -98,10 +98,10 @@ public abstract class AbstractLBFactory implements LBFactory {
                     LOGGER.error("load balancer init timeout without dropwizard Environment");
                 }
             } catch (InterruptedException iE) {
-                LOGGER.error("cauth InterruptedException in buildCache:");
+                LOGGER.error("caught InterruptedException in buildCache:");
                 iE.printStackTrace();
             } catch (Exception e) {
-                LOGGER.error("cauth Exception in buildCache:");
+                LOGGER.error("caught Exception in buildCache:");
                 e.printStackTrace();
             }
         }
