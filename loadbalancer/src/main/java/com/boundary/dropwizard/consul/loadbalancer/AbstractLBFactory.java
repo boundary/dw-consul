@@ -9,6 +9,8 @@ import io.dropwizard.lifecycle.Managed;
 import io.dropwizard.setup.Environment;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.valuehandling.UnwrapValidatedValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -29,6 +31,8 @@ public abstract class AbstractLBFactory implements LBFactory {
     @JsonProperty
     @Min(1)
     private int watchSeconds = 30;
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(AbstractLBFactory.class);
 
     public String getServiceName() {
         return serviceName;
@@ -87,6 +91,19 @@ public abstract class AbstractLBFactory implements LBFactory {
                     cache.stop();
                 }
             });
+        } else {
+            try {
+                cache.start();
+                if (!cache.awaitInitialized(10, TimeUnit.SECONDS)) {
+                    LOGGER.error("load balancer init timeout without dropwizard Environment");
+                }
+            } catch (InterruptedException iE) {
+                LOGGER.error("cauth InterruptedException in buildCache:");
+                iE.printStackTrace();
+            } catch (Exception e) {
+                LOGGER.error("cauth Exception in buildCache:");
+                e.printStackTrace();
+            }
         }
 
         return cache;
