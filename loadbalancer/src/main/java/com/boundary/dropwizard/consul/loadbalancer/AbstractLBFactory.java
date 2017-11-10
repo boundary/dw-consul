@@ -3,8 +3,8 @@ package com.boundary.dropwizard.consul.loadbalancer;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.orbitz.consul.HealthClient;
 import com.orbitz.consul.cache.ServiceHealthCache;
-import com.orbitz.consul.option.CatalogOptions;
-import com.orbitz.consul.option.ImmutableCatalogOptions;
+import com.orbitz.consul.option.ImmutableQueryOptions;
+import com.orbitz.consul.option.QueryOptions;
 import io.dropwizard.lifecycle.Managed;
 import io.dropwizard.setup.Environment;
 import org.hibernate.validator.constraints.NotBlank;
@@ -59,13 +59,13 @@ public abstract class AbstractLBFactory implements LBFactory {
     }
 
     protected ServiceHealthCache buildCache(Environment env, HealthClient healthClient) throws Exception {
-        final CatalogOptions catalogOptions;
+        final QueryOptions catalogOptions;
         if (getServiceTag().isPresent()) {
-            catalogOptions =  ImmutableCatalogOptions.builder()
-                    .tag(getServiceTag().get())
+            catalogOptions =  ImmutableQueryOptions.builder()
+                    .addTag(getServiceTag().get())
                     .build();
         } else {
-            catalogOptions = CatalogOptions.BLANK;
+            catalogOptions = QueryOptions.BLANK;
         }
 
         final ServiceHealthCache cache = ServiceHealthCache.newCache(
